@@ -1,3 +1,4 @@
-scikit-learn
+opencv-python
+opencv-contrib-python
+matplotlib
 scikit-image
-
