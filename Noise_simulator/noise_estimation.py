@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 from sklearn import preprocessing
 import pyarrow as pa
 import pyarrow.parquet as pq
+from patchify import patchify
 
-filenames = glob.glob(r"/media/labmanager/3B07B9F56DF9B08D/Project_subsidence/PHASE/*.tif")
+
+filenames = glob.glob(r"/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/PHASE/*.tif")
 scaler1 = preprocessing.MinMaxScaler(feature_range=(-1,1))
 scaler2 = preprocessing.MinMaxScaler(feature_range=(0,1))
 
@@ -31,7 +33,8 @@ for i in range(len(filenames)):
     # imagesc.plot(coh, linewidth=0, cmap='jet')
 
     Amplitude = amp
-    coh = 0.6 * coh
+    random_number = np.random.uniform(0.6, 1)
+    coh = random_number * coh
     ## Covariance Matrix Cholesky Decomposition
     C = np.zeros((np.size(phase, 0), np.size(phase, 1), 2, 2), dtype='complex_')
     for ii in range(np.size(phase, 0)):
@@ -75,7 +78,6 @@ for i in range(len(filenames)):
     cos = np.cos(phase_n)
 
     # imagesc.plot(phase_n, linewidth=0, cmap='jet')
-
     from patchify import patchify
 
 
@@ -89,8 +91,8 @@ for i in range(len(filenames)):
         return patches_img1, patches_img2, patches_img3, patches_img4, patches_img5
 
 
-    patches_img1, patches_img2, patches_img3, patches_img4, patches_img5 = get_patches(phase_n, Amp_n, coh, phase, amp, 256, 50)
-    DATA = np.zeros([256, 256, 5])
+    patches_img1, patches_img2, patches_img3, patches_img4, patches_img5 = get_patches(phase_n, Amp_n, coh, phase, amp, 341, 50)
+    DATA = np.zeros([341, 341, 5])
     k = 0
 
 
@@ -102,23 +104,23 @@ for i in range(len(filenames)):
             DATA[:, :, 3] = scaler1.fit_transform(patches_img4[a, b, :, :])
             DATA[:, :, 4] = scaler2.fit_transform(patches_img5[a, b, :, :])
 
-            import gzip
-
-            f = gzip.GzipFile("x.npy.gz", "w")
-            np.save(file=f, arr=DATA)
-            f.close()
-
-
-            DATA_NEW = DATA.reshape(-1 , 5)
-            arrays = [
-                pa.array(col)  # Create one arrow array per column
-                for col in DATA_NEW
-            ]
-            table = pa.Table.from_arrays(
-                arrays,
-                names=[str(i) for i in range(len(arrays))]  # give names to each columns
-            )
-            pq.write_table(table, 'table.pq')
+            # import gzip
+            #
+            # f = gzip.GzipFile("x.npy.gz", "w")
+            # np.save(file=f, arr=DATA)
+            # f.close()
+            #
+            #
+            # DATA_NEW = DATA.reshape(-1 , 5)
+            # arrays = [
+            #     pa.array(col)  # Create one arrow array per column
+            #     for col in DATA_NEW
+            # ]
+            # table = pa.Table.from_arrays(
+            #     arrays,
+            #     names=[str(i) for i in range(len(arrays))]  # give names to each columns
+            # )
+            # pq.write_table(table, 'table.pq')
 
             np.save('' + str(i) + str(4 * a + b) + '.npy', DATA)
 
@@ -127,7 +129,11 @@ for i in range(len(filenames)):
 
 
 
-filenames_train = glob.glob("/media/data/Project_subsidence/Patches/*.npy")
+filenames_train = glob.glob("/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/Patches/*.npy")
+
+test_data = np.load(filenames_train[0])
+plt.imshow(test_data[:,:,0])
+
 
 Patches = np.zeros([len(filenames_train), 256, 256, 5])
 

@@ -28,6 +28,8 @@ Unique_name = Unique_Time.astype(str)
 DELTA_PHASE = np.zeros([len(filenames) , 1])
 Phase = np.zeros([len(Unique_Time), np.shape(test_data)[0] , np.shape(test_data)[1]])
 
+
+
 for row in range(np.shape(test_data)[0]):
     for col in range(np.shape(test_data)[1]):
         if test_data[row , col] == 0:
@@ -64,11 +66,32 @@ for row in range(np.shape(test_data)[0]):
 
 
 
+from osgeo import gdal
+ds = gdal.Open('/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/PHASE/20190112_20190205.tif')
+phase = ds.GetRasterBand(4).ReadAsArray()
+amp = np.sqrt(ds.GetRasterBand(1).ReadAsArray())
+coh = ds.GetRasterBand(2).ReadAsArray()
+data = np.zeros([3 , np.shape(phase)[0] , np.shape(phase)[1]])
+data[0 , :, :] = phase
+data[1 , :, :] = amp
+data[2 , :, :] = coh
 
+np.save('real_data.npy' , data)
 
+plt.imshow(phase)
 
-
-
+# import rasterio
+# from rasterio.fill import fillnodata
+#
+# tif_file = r"/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/Interferograms/20190112_20190205_IW2.tif"
+# with rasterio.open(tif_file) as src:
+#     profile = src.profile
+#     arr = src.read(1)
+#     arr_filled = fillnodata(arr, mask=src.read_masks(1), max_search_distance=10, smoothing_iterations=0)
+#
+# newtif_file = r"test_filled.tif"
+# with rasterio.open(newtif_file, 'w', **profile) as dest:
+#     dest.write_band(1, arr_filled)
 
 
 

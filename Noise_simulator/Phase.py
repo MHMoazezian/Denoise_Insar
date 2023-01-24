@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import KDTree
 
 import sys
-sys.path.append('/home/miladmoazazian/.snap/snap-python')
-import snappy
+sys.path.append('/home/miladmoazezian/.snap/snap-python')
+# import snappy
 
 MONTH = ['Jan' , 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'Jul' , 'Aug' , 'Sep' , 'Oct' , 'Nov' , 'Dec']
 
@@ -42,7 +42,7 @@ point_Dem = pp_Dem[~np.isnan(pp_Dem).any(axis=1)]
 XY_Dem = list(zip(point_Dem[:, 0], point_Dem[:, 1]))
 
 # SAR(xy)
-filenames_SAR = glob.glob(r"/media/data/Project_subsidence/Interferograms/*_IW2.tif")
+filenames_SAR = glob.glob(r"/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/Interferograms/*_IW2.tif")
 filenames_Range = glob.glob(r"/media/data/Project_subsidence/Interferograms/*_Range.tif")
 
 #plt.imshow(rasterArray)
@@ -219,3 +219,7 @@ for i in range(len(filenames_SAR)):
     write_geotiff("/media/data/Project_subsidence/PHASE/" + time + ".tif", NEW_Amplitude1, NEW_Coherency1, Phase_denoise, NEW_PHASE1)
 
 
+
+
+# test
+arr = gdal.Open('/media/miladmoazezian/3B07B9F56DF9B08D/Project_subsidence/DEMs/SRTM_DEM.tif').GetRasterBand(1).ReadAsArray()
